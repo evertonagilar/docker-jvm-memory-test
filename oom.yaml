@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: memory-test
+  name: memory-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: memory-test
+  template:
+    metadata:
+      labels:
+        app: memory-test
+    spec:
+      containers:
+      - name: memory-test
+        image: evertonagilar/docker-memory-test
+        env:
+        - name: ALLOC_HEAP_MB
+          value: "10"
+        - name: MAX_HEAP_SIZE_MB
+          value: "500"
+        resources:
+          requests:
+            memory: "10M"
+            cpu: "100m"
+          limits:
+            memory: "250M"
+            cpu: "500m"

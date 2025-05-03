@@ -1,4 +1,4 @@
-FROM java:8-jdk-alpine
+FROM eclipse-temurin:8-jdk-alpine
 
 COPY javassist.jar .
 COPY MemoryTest.java .
@@ -53,7 +53,7 @@ ENV ALLOC_NATIVE_MB=0
 # Defines the period for the jcmd output
 ENV LOG_PERIOD_S=1
 
-CMD java \
+CMD ["sh", "-c", "java \
      -XX:+UnlockDiagnosticVMOptions -XX:NativeMemoryTracking=summary -XX:+PrintNMTStatistics -XX:-AutoShutdownNMT \
      -Xmx${MAX_HEAP_SIZE_MB}m -Xms1m \
      -Xss${THREAD_STACK_SIZE_KB}k \
@@ -61,4 +61,4 @@ CMD java \
      -XX:MaxDirectMemorySize=${MAX_DIRECT_SIZE_MB}m \
      -cp javassist.jar:. \
      MemoryTest $ALLOC_PERIOD_MS $ALLOC_HEAP_MB $ALLOC_NATIVE_MB $ALLOC_DIRECT_MB $ALLOC_CLASSES_COUNT $ALLOC_THREADS_COUNT \
-     & PID=$! ; while [ -e /proc/$PID ] ; do jcmd $PID VM.native_memory summary scale=MB ; sleep ${LOG_PERIOD_S}s ; done 
+     & PID=$! ; while [ -e /proc/$PID ] ; do jcmd $PID VM.native_memory summary scale=MB ; sleep ${LOG_PERIOD_S}s ; done"]
